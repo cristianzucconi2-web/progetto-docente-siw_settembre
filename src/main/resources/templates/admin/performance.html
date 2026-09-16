@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisi Prestazioni JPA - FestivalHUB Admin</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container">
+        <div class="page-header-lg">
+            <div>
+                <a th:href="@{/admin}" class="link-nav-back">← Pannello Admin</a>
+                <h1 class="page-title mt-8">⚡ Analisi Sperimentale delle Prestazioni JPA</h1>
+            </div>
+            <a th:href="@{/admin/performance}" class="btn-primary btn-benchmark-reload">🔄 Rilancia Benchmark</a>
+        </div>
+
+        <!-- Descrizione del caso d'uso analizzato -->
+        <div class="perf-info-box">
+            <h3 class="perf-info-title">Caso d'uso analizzato: "Caricamento di tutti i film di un festival con i relativi registi"</h3>
+            <p class="perf-info-desc">
+                Vengono confrontate 4 diverse strategie di accesso ai dati JPA/Hibernate sullo stesso set di record per calcolare la mediana dei tempi di esecuzione e contare le reali query SQL inviate a PostgreSQL.
+            </p>
+        </div>
+
+        <!-- Tabella Comparativa Strategie -->
+        <table class="custom-table mb-35">
+            <thead>
+                <tr>
+                    <th>Strategia JPA</th>
+                    <th>Query SQL Eseguite</th>
+                    <th>Tempo Mediano</th>
+                    <th>Comportamento Query</th>
+                    <th>Valutazione</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="entry : ${risultati}">
+                    <td>
+                        <strong th:text="${entry.key}">Strategia</strong>
+                    </td>
+                    <td>
+                        <span class="perf-query-count" th:text="${entry.value.queryCount}"></span> query
+                    </td>
+                    <td>
+                        <span class="perf-time-value" th:text="${entry.value.tempoMs} + ' ms'"></span>
+                    </td>
+                    <td th:text="${entry.value.comportamento}">Comportamento</td>
+                    <td>
+                        <span th:class="${entry.value.badgeClass}" th:text="${entry.value.badgeText}"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Dettaglio delle Strategie -->
+        <h2 class="section-title">Dettaglio Tecnico delle Strategie Confrontate</h2>
+
+        <div th:each="entry : ${risultati}" class="perf-card">
+            <div class="review-header-flex">
+                <h3 class="section-title-sm card-accent-text mb-0" th:text="${entry.key}">Nome Strategia</h3>
+                <span th:class="${entry.value.badgeClass}" th:text="${entry.value.badgeText}"></span>
+            </div>
+            
+            <p class="card-desc-text" th:text="${entry.value.descrizione}">
+                Descrizione tecnica...
+            </p>
+
+            <div class="perf-times-list">
+                Tempi di tutte le 5 iterazioni: 
+                <span th:each="t, iter : ${entry.value.tuttiTempi}">
+                    <strong th:text="${t} + 'ms'"></strong><span th:if="${!iter.last}">, </span>
+                </span>
+            </div>
+        </div>
+
+        <div class="mt-30">
+            <a th:href="@{/admin}" class="btn-outline">← Torna al pannello admin</a>
+        </div>
+    </div>
+
+</body>
+</html>

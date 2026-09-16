@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${festival.nome} + ' - FestivalHUB'">Dettaglio Festival</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+	
+    <div class="container">
+        <!-- Header Festival -->
+        <div class="detail-hero-card">
+            <div class="flex-between-start flex-wrap flex-gap-15">
+                <div>
+                    <h1 class="detail-title" th:text="${festival.nome}">Nome Festival</h1>
+                    <p class="detail-accent-text">
+                        📍 <span th:text="${festival.citta}">Città</span> • Edizione <span th:text="${festival.anno}">2026</span>
+                    </p>
+                    <p class="detail-meta-text">
+                        🗓️ Dal <strong th:text="${festival.dataInizio != null ? festival.dataInizio : 'Inizio TBD'}"></strong> al <strong th:text="${festival.dataFine != null ? festival.dataFine : 'Fine TBD'}"></strong>
+                    </p>
+                </div>
+
+                <div sec:authorize="hasAuthority('ADMIN')" class="flex-gap-10 align-center">
+                    <a th:href="@{/admin/modificaFestival/{id}(id=${festival.id})}" class="btn-outline btn-action-outline">Modifica Festival</a>
+                    <form th:action="@{/admin/eliminaFestival/{id}(id=${festival.id})}" method="POST" class="form-inline" onsubmit="return confirm('Eliminare questo festival cancellerà anche le relative proiezioni. Sei sicuro?');">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" class="btn-logout">Elimina Festival</button>
+                    </form>
+                </div>
+            </div>
+
+            <p class="detail-body-text" th:text="${festival.descrizione}">
+                Descrizione...
+            </p>
+        </div>
+
+        <!-- Sezione Film in Concorso / Partecipanti -->
+        <div class="mb-40">
+            <div class="page-header">
+                <h2 class="section-title mb-0">🎬 Film Partecipanti</h2>
+            </div>
+
+            <div th:if="${not #lists.isEmpty(filmList)}" class="grid-cards">
+                <div th:each="film : ${filmList}" class="card">
+                    <h3 th:text="${film.titolo}" class="mt-0">Titolo Film</h3>
+                    <p class="card-desc-text mb-10">
+                        Regia: <strong th:text="${film.regista != null ? (film.regista.nome + ' ' + film.regista.cognome) : 'N/D'}"></strong>
+                    </p>
+                    <p class="card-meta-text-sm">
+                        🎭 <span th:text="${film.genere}"></span> • ⏱️ <span th:text="${film.durata} + ' min'"></span>
+                    </p>
+                    
+                    <div class="card-footer-flex">
+                        <a th:href="@{/film/{id}(id=${film.id})}" class="btn-outline btn-action-outline-sm">Scheda Film →</a>
+                        
+                        <div sec:authorize="hasAuthority('ADMIN')">
+                            <form th:action="@{/admin/festival/{id}/rimuoviFilm/{filmId}(id=${festival.id}, filmId=${film.id})}" method="POST" class="form-inline">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <button type="submit" class="btn-delete-plain-sm">Rimuovi dal Festival</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(filmList)}" class="empty-state-box">
+                Nessun film ancora registrato in questo festival.
+            </div>
+
+            <!-- Box Admin per associare film esistente al festival -->
+            <div sec:authorize="hasAuthority('ADMIN')" class="admin-associate-box">
+                <h4 class="admin-associate-title">➕ Associa un film a questo Festival</h4>
+                <div class="flex-gap-10 flex-wrap">
+                    <span th:each="f : ${tuttiFilm}" th:if="${not #lists.contains(filmList, f)}" class="form-inline">
+                        <form th:action="@{/admin/festival/{id}/aggiungiFilm/{filmId}(id=${festival.id}, filmId=${f.id})}" method="POST" class="m-0">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn-outline btn-associate-film">
+                                + <span th:text="${f.titolo}"></span>
+                            </button>
+                        </form>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sezione Programma Proiezioni -->
+        <div>
+            <div class="page-header">
+                <h2 class="section-title mb-0">🎟️ Programma Proiezioni</h2>
+                <div sec:authorize="hasAuthority('ADMIN')">
+                    <a th:href="@{/admin/nuovaProiezione}" class="btn-primary btn-action-outline">+ Programma Proiezione</a>
+                </div>
+            </div>
+
+            <table th:if="${not #lists.isEmpty(proiezioni)}" class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Ora</th>
+                        <th>Film</th>
+                        <th>Sala</th>
+                        <th>Stato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${proiezioni}">
+                        <td><strong th:text="${p.data}"></strong></td>
+                        <td th:text="${p.ora}"></td>
+                        <td>
+                            <a th:href="@{/film/{id}(id=${p.film.id})}" th:text="${p.film.titolo}" class="link-table-title"></a>
+                        </td>
+                        <td th:text="${p.sala.nome + ' (' + p.sala.indirizzo + ')'}"></td>
+                        <td>
+                            <span th:class="${p.stato.name() == 'SCHEDULED' ? 'badge badge-green' : (p.stato.name() == 'CANCELLED' ? 'badge badge-red' : 'badge')}"
+                                  th:text="${p.stato.etichetta}">
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${#lists.isEmpty(proiezioni)}" class="empty-state-box">
+                Nessuna proiezione programmata per questo festival.
+            </div>
+        </div>
+
+        <div class="mt-40">
+            <a th:href="@{/festivals}" class="btn-outline">← Torna alla lista festival</a>
+        </div>
+    </div>
+
+</body>
+</html>

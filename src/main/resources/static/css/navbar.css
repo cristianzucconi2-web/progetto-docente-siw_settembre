@@ -1,0 +1,131 @@
+/* navbar.css */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 50px;
+    background: #ffffff;
+    border-bottom: 2px solid #eef0f4;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #4338ca;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #4b5563;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+    color: #4338ca;
+}
+
+.nav-auth {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-auth-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-admin-nav {
+    border-color: #f59e0b;
+    color: #d97706;
+    font-weight: 700;
+    background: #fffbeb;
+}
+
+.btn-admin-nav:hover {
+    background: #fef3c7;
+    border-color: #d97706;
+}
+
+.nav-greeting {
+    font-weight: 500;
+    font-size: 0.92rem;
+    color: #374151;
+}
+
+.nav-username {
+    color: #4338ca;
+}
+
+.btn-primary {
+    background: #4338ca;
+    color: white;
+    padding: 10px 22px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    display: inline-block;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: #3730a3;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(67, 56, 202, 0.25);
+}
+
+.btn-outline {
+    background: transparent;
+    color: #4338ca;
+    border: 1.5px solid #4338ca;
+    padding: 9px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.btn-outline:hover {
+    background: #eef2ff;
+}
+
+.btn-logout {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-logout:hover {
+    background: #fecaca;
+}

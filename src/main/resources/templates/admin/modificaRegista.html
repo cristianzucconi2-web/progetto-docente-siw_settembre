@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifica Regista - FestivalHUB</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container">
+        <div class="form-card">
+            <h1 class="form-title">Modifica Regista</h1>
+            
+            <form th:action="@{/admin/modificaRegista/{id}(id=${regista.id})}" method="POST" th:object="${regista}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <input type="hidden" th:field="*{id}" />
+
+                <div class="grid-2-col">
+                    <div class="form-group">
+                        <label>Nome:</label>
+                        <input type="text" th:field="*{nome}" required />
+                        <div class="field-error" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Cognome:</label>
+                        <input type="text" th:field="*{cognome}" required />
+                        <div class="field-error" th:if="${#fields.hasErrors('cognome')}" th:errors="*{cognome}"></div>
+                    </div>
+                </div>
+
+                <div class="grid-2-col">
+                    <div class="form-group">
+                        <label>Data di Nascita:</label>
+                        <input type="date" th:field="*{dataNascita}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Nazionalità:</label>
+                        <input type="text" th:field="*{nazionalita}" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Biografia:</label>
+                    <textarea th:field="*{biografia}" rows="4"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Salva Modifiche</button>
+                    <a th:href="@{/regista/{id}(id=${regista.id})}" class="btn-outline">Annulla</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

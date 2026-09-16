@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sale Cinematografiche - FestivalHUB</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Sale Cinematografiche</h1>
+                <p class="page-subtitle">Visualizza gli spazi e i teatri che ospitano le proiezioni dei festival.</p>
+            </div>
+            <div sec:authorize="hasAuthority('ADMIN')">
+                <a th:href="@{/admin/nuovaSala}" class="btn-primary">+ Nuova Sala</a>
+            </div>
+        </div>
+
+        <div class="grid-cards">
+            <div th:each="sala : ${sale}" class="card">
+                <div class="card-icon-md">🏛️</div>
+                <h3 th:text="${sala.nome}" class="card-title mb-8">Nome Sala</h3>
+                
+                <p class="card-desc-text mb-10">
+                    📍 <span th:text="${sala.indirizzo}">Indirizzo</span>
+                </p>
+
+                <p class="card-accent-text">
+                    👥 Capienza: <span th:text="${sala.capienza}">0</span> posti
+                </p>
+
+                <div class="card-footer-flex">
+                    <a th:href="@{/sala/{id}(id=${sala.id})}" class="btn-outline btn-action-outline-sm">Proiezioni in Sala →</a>
+                    
+                    <span sec:authorize="hasAuthority('ADMIN')" class="flex-gap-8 align-center">
+                        <a th:href="@{/admin/modificaSala/{id}(id=${sala.id})}" class="link-edit-action">Modifica</a>
+                        <form th:action="@{/admin/eliminaSala/{id}(id=${sala.id})}" method="POST" class="form-inline" onsubmit="return confirm('Eliminare questa sala eliminerà anche le proiezioni associate. Sei sicuro?');">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn-delete-plain">Elimina</button>
+                        </form>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

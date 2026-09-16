@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programma Proiezione - FestivalHUB</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container">
+        <div class="form-card">
+            <h1 class="form-title">Programma Nuova Proiezione</h1>
+            <p class="form-subtitle">
+                Il sistema verificherà automaticamente l'assenza di sovrapposizioni orarie nella sala scelta.
+            </p>
+
+            <!-- Messaggio Errore Conflitto Sala / Date -->
+            <div th:if="${errorMessage != null}" class="alert-error" th:text="${errorMessage}">
+                Errore conflitto sala
+            </div>
+
+            <form th:action="@{/admin/nuovaProiezione}" method="POST">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                <div class="form-group">
+                    <label>Festival di Riferimento:</label>
+                    <select name="festivalId" required>
+                        <option value="" disabled selected>-- Seleziona un festival --</option>
+                        <option th:each="fest : ${festivals}" th:value="${fest.id}" th:text="${fest.nome + ' (' + fest.anno + ' - ' + fest.citta + ')'}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Film da Proiettare:</label>
+                    <select name="filmId" required>
+                        <option value="" disabled selected>-- Seleziona un film --</option>
+                        <option th:each="f : ${films}" th:value="${f.id}" th:text="${f.titolo + ' (' + f.durata + ' min - ' + (f.regista != null ? f.regista.cognome : 'N/D') + ')'}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Sala Cinematografica:</label>
+                    <select name="salaId" required>
+                        <option value="" disabled selected>-- Seleziona una sala --</option>
+                        <option th:each="s : ${sale}" th:value="${s.id}" th:text="${s.nome + ' (' + s.capienza + ' posti - ' + s.indirizzo + ')'}"></option>
+                    </select>
+                </div>
+
+                <div class="grid-2-col">
+                    <div class="form-group">
+                        <label>Data Proiezione:</label>
+                        <input type="date" name="data" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Ora Inizio:</label>
+                        <input type="time" name="ora" required />
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Conferma Programmazione</button>
+                    <a th:href="@{/proiezioni}" class="btn-outline">Annulla</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

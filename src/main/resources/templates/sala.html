@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${sala.nome} + ' - FestivalHUB'">Dettaglio Sala</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container">
+        <div class="detail-hero-card">
+            <div class="flex-between-start flex-wrap flex-gap-15">
+                <div>
+                    <h1 class="detail-title" th:text="${sala.nome}">Nome Sala</h1>
+                    <p class="detail-meta-text-spaced mb-10">
+                        📍 Indirizzo: <strong th:text="${sala.indirizzo}"></strong>
+                    </p>
+                    <p class="detail-accent-text mb-0">
+                        👥 Capienza massima: <span th:text="${sala.capienza}"></span> spettatori
+                    </p>
+                </div>
+
+                <div sec:authorize="hasAuthority('ADMIN')" class="flex-gap-10">
+                    <a th:href="@{/admin/modificaSala/{id}(id=${sala.id})}" class="btn-outline btn-action-outline">Modifica Sala</a>
+                    <form th:action="@{/admin/eliminaSala/{id}(id=${sala.id})}" method="POST" class="form-inline" onsubmit="return confirm('Vuoi davvero eliminare questa sala?');">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" class="btn-logout">Elimina Sala</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h2 class="section-title">🎟️ Proiezioni Ospitate in Questa Sala</h2>
+
+            <table th:if="${not #lists.isEmpty(sala.proiezioni)}" class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Ora</th>
+                        <th>Film</th>
+                        <th>Festival</th>
+                        <th>Stato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${sala.proiezioni}">
+                        <td><strong th:text="${p.data}"></strong></td>
+                        <td th:text="${p.ora}"></td>
+                        <td>
+                            <a th:href="@{/film/{id}(id=${p.film.id})}" th:text="${p.film.titolo}" class="link-table-title"></a>
+                        </td>
+                        <td>
+                            <a th:href="@{/festival/{id}(id=${p.festival.id})}" th:text="${p.festival.nome}"></a>
+                        </td>
+                        <td>
+                            <span th:class="${p.stato.name() == 'SCHEDULED' ? 'badge badge-green' : (p.stato.name() == 'CANCELLED' ? 'badge badge-red' : 'badge')}"
+                                  th:text="${p.stato.etichetta}">
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${#lists.isEmpty(sala.proiezioni)}" class="empty-state-box">
+                Nessuna proiezione attualmente programmata in questa sala.
+            </div>
+        </div>
+
+        <div class="mt-40">
+            <a th:href="@{/sale}" class="btn-outline">← Torna all'elenco sale</a>
+        </div>
+    </div>
+
+</body>
+</html>

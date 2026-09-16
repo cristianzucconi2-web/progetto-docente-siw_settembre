@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuovo Film - FestivalHUB</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container">
+        <div class="form-card">
+            <h1 class="form-title">Inserisci Nuovo Film</h1>
+            
+            <form th:action="@{/admin/nuovoFilm}" method="POST" th:object="${film}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                <div class="form-group">
+                    <label>Titolo del Film:</label>
+                    <input type="text" th:field="*{titolo}" placeholder="Es: Oppenheimer" required />
+                    <div class="field-error" th:if="${#fields.hasErrors('titolo')}" th:errors="*{titolo}"></div>
+                </div>
+
+                <div class="grid-2-col">
+                    <div class="form-group">
+                        <label>Anno di Uscita:</label>
+                        <input type="number" th:field="*{anno}" placeholder="2026" required />
+                        <div class="field-error" th:if="${#fields.hasErrors('anno')}" th:errors="*{anno}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Durata (minuti):</label>
+                        <input type="number" th:field="*{durata}" placeholder="120" required />
+                        <div class="field-error" th:if="${#fields.hasErrors('durata')}" th:errors="*{durata}"></div>
+                    </div>
+                </div>
+
+                <div class="grid-2-col">
+                    <div class="form-group">
+                        <label>Genere:</label>
+                        <input type="text" th:field="*{genere}" placeholder="Es: Drammatico, Fantascienza" required />
+                        <div class="field-error" th:if="${#fields.hasErrors('genere')}" th:errors="*{genere}"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Paese di Produzione:</label>
+                        <input type="text" th:field="*{paeseProduzione}" placeholder="Es: Italia, USA" required />
+                        <div class="field-error" th:if="${#fields.hasErrors('paeseProduzione')}" th:errors="*{paeseProduzione}"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Regista:</label>
+                    <select th:field="*{regista}" required>
+                        <option value="" disabled selected>-- Seleziona un regista --</option>
+                        <option th:each="r : ${registi}" th:value="${r.id}" th:text="${r.nome + ' ' + r.cognome + ' (' + r.nazionalita + ')'}"></option>
+                    </select>
+                    <div class="field-error" th:if="${#fields.hasErrors('regista')}" th:errors="*{regista}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Trama:</label>
+                    <textarea th:field="*{trama}" rows="4" placeholder="Sinossi del film..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Salva Film</button>
+                    <a th:href="@{/films}" class="btn-outline">Annulla</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

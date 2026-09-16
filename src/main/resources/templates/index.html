@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FestivalHUB - Gestione Festival Cinematografici</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-text">
+                <h1>Esplora i Grandi Festival del Cinema</h1>
+                <p>Scopri i festival cinematografici più prestigiosi, i film in concorso, i grandi registi internazionali e consulta il programma completo delle proiezioni in sala.</p>
+                <div class="hero-btn-group">
+                    <a th:href="@{/festivals}" class="btn-primary btn-hero-cta">Scopri i Festival →</a>
+                </div>
+            </div>
+            <div class="hero-image hero-image-giant">
+                🎥
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section class="features">
+            <!-- Card 1: Festival -->
+            <div class="feature-card">
+                <div>
+                    <div class="feature-icon">🏆</div>
+                    <h3>Festival Cinematografici</h3>
+                    <p>Esplora gli eventi in programma a Venezia, Cannes, Berlino e scopri tutte le opere presentate.</p>
+                </div>
+                <a th:href="@{/festivals}" class="btn-outline btn-center-block">Vai ai Festival →</a>
+            </div>
+
+            <!-- Card 2: Film -->
+            <div class="feature-card">
+                <div>
+                    <div class="feature-icon">🎬</div>
+                    <h3>Catalogo Film</h3>
+                    <p>Consulta le schede dettagliate dei film, le durate, i paesi di produzione, i registi e le recensioni.</p>
+                </div>
+                <a th:href="@{/films}" class="btn-outline btn-center-block">Esplora i Film →</a>
+            </div>
+
+            <!-- Card 3: Registi -->
+            <div class="feature-card">
+                <div>
+                    <div class="feature-icon">👤</div>
+                    <h3>Grandi Registi</h3>
+                    <p>Scopri le biografie, le nazionalità e la filmografia completa dei maestri del cinema mondiale.</p>
+                </div>
+                <a th:href="@{/registi}" class="btn-outline btn-center-block">Conosci i Registi →</a>
+            </div>
+
+            <!-- Card 4: Programma Proiezioni -->
+            <div class="feature-card">
+                <div>
+                    <div class="feature-icon">🎟️</div>
+                    <h3>Programma Proiezioni</h3>
+                    <p>Verifica le date, gli orari e le sale cinematografiche per assistere alle anteprime dei film.</p>
+                </div>
+                <a th:href="@{/proiezioni}" class="btn-outline btn-center-block">Vedi il Programma →</a>
+            </div>
+        </section>
+    </div>
+
+</body>
+</html>

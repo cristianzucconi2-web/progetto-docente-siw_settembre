@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Film - FestivalHUB Admin</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container">
+        <div class="page-header-lg">
+            <div>
+                <a th:href="@{/admin}" class="link-nav-back">← Pannello Admin</a>
+                <h1 class="page-title mt-8">Gestione Catalogo Film</h1>
+            </div>
+            <a th:href="@{/admin/nuovoFilm}" class="btn-primary">+ Nuovo Film</a>
+        </div>
+
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Titolo</th>
+                    <th>Anno</th>
+                    <th>Genere</th>
+                    <th>Regista</th>
+                    <th>Durata</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="film : ${films}">
+                    <td>
+                        <a th:href="@{/film/{id}(id=${film.id})}" th:text="${film.titolo}" class="link-table-title">Titolo</a>
+                    </td>
+                    <td th:text="${film.anno}">Anno</td>
+                    <td th:text="${film.genere}">Genere</td>
+                    <td th:text="${film.regista != null ? (film.regista.nome + ' ' + film.regista.cognome) : 'N/D'}">Regista</td>
+                    <td th:text="${film.durata} + ' min'">Durata</td>
+                    <td>
+                        <div class="flex-gap-10 align-center">
+                            <a th:href="@{/admin/modificaFilm/{id}(id=${film.id})}" class="badge badge-action-edit">Modifica</a>
+                            <form th:action="@{/admin/eliminaFilm/{id}(id=${film.id})}" method="POST" class="m-0" onsubmit="return confirm('Sei sicuro di voler eliminare questo film?');">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <button type="submit" class="badge badge-red badge-action-delete">Elimina</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

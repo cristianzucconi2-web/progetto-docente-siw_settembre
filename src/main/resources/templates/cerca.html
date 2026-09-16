@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ricerca Film Live - FestivalHUB</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container">
+        <div class="hero-search-live">
+            <h1>Ricerca Film in Tempo Reale</h1>
+            <p>Modulo dinamico sviluppato in <strong>React 18</strong> collegato alle API REST di Spring Boot.</p>
+            
+            <div class="hero-search-tags">
+                <small>Festival attivi:</small>
+                <span th:each="fest : ${festivals}" class="badge badge-tag-translucent" th:text="${fest.nome}"></span>
+            </div>
+        </div>
+
+        <!-- React Mount Point -->
+        <div id="root"></div>
+    </div>
+
+    <!-- Script React, ReactDOM e Babel per JSX -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel" src="/js/cerca.js"></script>
+
+</body>
+</html>

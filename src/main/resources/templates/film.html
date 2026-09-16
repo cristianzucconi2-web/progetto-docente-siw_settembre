@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${film.titolo} + ' - FestivalHUB'">Scheda Film</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+	
+    <div class="container">
+        <p th:if="${media != null}" class="rating-badge-gold">
+            ⭐ Valutazione media: <span th:text="${#numbers.formatDecimal(media, 1, 1)}"></span> / 5
+        </p>
+        <!-- Caso B: NON ci sono ancora recensioni -->
+        <p th:if="${media == null}" class="rating-badge-empty">
+            ⭐ Nessuna valutazione ancora presente per questo film.
+        </p>
+        <!-- Scheda Film Principale -->
+        <div class="detail-hero">
+            <div class="flex-between-start flex-wrap flex-gap-15">
+                <div>
+                    <h1 th:text="${film.titolo}" class="detail-title">Titolo Film</h1>
+                    <p class="detail-meta-text-spaced">
+                        Anno: <strong th:text="${film.anno}"></strong> • 
+                        Genere: <strong th:text="${film.genere}"></strong> • 
+                        Durata: <strong th:text="${film.durata} + ' minuti'"></strong> • 
+                        Paese: <strong th:text="${film.paeseProduzione}"></strong>
+                    </p>
+                    <p class="detail-accent-text mb-0">
+                        Regia di: 
+                        <a th:if="${film.regista != null}" th:href="@{/regista/{id}(id=${film.regista.id})}" class="detail-link-accent" th:text="${film.regista.nome + ' ' + film.regista.cognome}"></a>
+                        <span th:if="${film.regista == null}">Non specificato</span>
+                    </p>
+                </div>
+
+                <div sec:authorize="hasAuthority('ADMIN')" class="flex-gap-10 align-center">
+                    <a th:href="@{/admin/modificaFilm/{id}(id=${film.id})}" class="btn-outline btn-action-outline">Modifica Film</a>
+                    <form th:action="@{/admin/eliminaFilm/{id}(id=${film.id})}" method="POST" class="form-inline" onsubmit="return confirm('Eliminando questo film eliminerai anche recensioni e proiezioni collegate. Sei sicuro?');">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" class="btn-logout">Elimina Film</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Trama -->
+            <div class="detail-section-divider">
+                <h3 class="section-title-sm">📖 Trama</h3>
+                <p class="detail-body-text-plain" th:text="${film.trama != null ? film.trama : 'Nessuna trama disponibile per questo film.'}">
+                    Trama...
+                </p>
+            </div>
+
+            <!-- Festival in cui è presente -->
+            <div class="detail-section-divider">
+                <h4 class="section-title-sm">🏆 Presentato nei Festival:</h4>
+                <div th:if="${not #lists.isEmpty(film.festival)}" class="flex-gap-10 flex-wrap">
+                    <a th:each="fest : ${film.festival}" th:href="@{/festival/{id}(id=${fest.id})}" class="badge badge-gold btn-action-outline">
+                        <span th:text="${fest.nome + ' (' + fest.anno + ')'}"></span>
+                    </a>
+                </div>
+                <div th:if="${#lists.isEmpty(film.festival)}" class="badge-empty-text">
+                    Questo film non è attualmente associato ad alcun festival.
+                </div>
+            </div>
+        </div>
+
+        <!-- Sezione Proiezioni Programmate per questo film -->
+        <div class="mb-40">
+            <h2 class="section-title">🎟️ Proiezioni Programmate</h2>
+
+            <table th:if="${not #lists.isEmpty(proiezioni)}" class="custom-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Ora</th>
+                        <th>Festival</th>
+                        <th>Sala</th>
+                        <th>Stato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="p : ${proiezioni}">
+                        <td><strong th:text="${p.data}"></strong></td>
+                        <td th:text="${p.ora}"></td>
+                        <td>
+                            <a th:href="@{/festival/{id}(id=${p.festival.id})}" th:text="${p.festival.nome}" class="link-table-title"></a>
+                        </td>
+                        <td th:text="${p.sala.nome + ' (' + p.sala.indirizzo + ')'}"></td>
+                        <td>
+                            <span th:class="${p.stato.name() == 'SCHEDULED' ? 'badge badge-green' : (p.stato.name() == 'CANCELLED' ? 'badge badge-red' : 'badge')}"
+                                  th:text="${p.stato.etichetta}">
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div th:if="${#lists.isEmpty(proiezioni)}" class="empty-state-box">
+                Nessuna proiezione programmata per questo film.
+            </div>
+        </div>
+
+        <!-- Sezione Recensioni Utenti -->
+        <div>
+            <h2 class="section-title">💬 Recensioni e Valutazioni</h2>
+
+            <!-- Box Aggiungi Recensione (solo per utenti loggati che non hanno ancora recensito) -->
+            <div sec:authorize="isAuthenticated()">
+                <div th:if="${giaRecensito == null or !giaRecensito}" class="review-form-card">
+                    <h3 class="mt-0">Lascia la tua recensione</h3>
+                    <form th:action="@{/film/{id}/recensione(id=${film.id})}" method="POST">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                        <div class="form-group">
+                            <label>Voto da 1 a 5 stelle:</label>
+                            <select name="voto" class="review-vote-select" required>
+                                <option value="5">⭐⭐⭐⭐⭐ (5/5 - Eccellente)</option>
+                                <option value="4">⭐⭐⭐⭐ (4/5 - Molto Buono)</option>
+                                <option value="3">⭐⭐⭐ (3/5 - Buono)</option>
+                                <option value="2">⭐⭐ (2/5 - Sufficiente)</option>
+                                <option value="1">⭐ (1/5 - Scarso)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Testo della recensione:</label>
+                            <textarea name="testo" rows="4" placeholder="Scrivi la tua opinione sul film (minimo 5 caratteri)..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary">Pubblica Recensione</button>
+                    </form>
+                </div>
+
+                <div th:if="${giaRecensito != null and giaRecensito}" class="review-already-submitted">
+                    ✓ Hai già recensito questo film. Puoi modificare o eliminare la tua recensione qui sotto.
+                </div>
+            </div>
+
+            <div sec:authorize="isAnonymous()" class="review-login-prompt">
+                Per lasciare una recensione devi <a th:href="@{/login}" class="detail-link-accent">accedere</a> o <a th:href="@{/register}" class="detail-link-accent">registrarti</a>.
+            </div>
+
+            <!-- Elenco Recensioni -->
+            <div th:each="r : ${recensioni}" class="review-card">
+                <div class="review-header-flex">
+                    <div>
+                        <strong th:text="${r.utente != null ? (r.utente.name + ' ' + r.utente.surname) : 'Utente Anonimo'}"></strong>
+                        <span class="stars ml-10" th:text="${'★'.repeat(r.voto) + '☆'.repeat(5 - r.voto)}"></span>
+                    </div>
+                    <small th:text="${r.dataPubblicazione}"></small>
+                </div>
+
+                <p class="card-desc-text" th:text="${r.testo}">Testo...</p>
+
+                <!-- Azioni Proprietario o Admin -->
+                <div class="review-actions-bar">
+                    <a th:if="${credentials != null and credentials.user != null and credentials.user.id == r.utente.id}" 
+                       th:href="@{/recensione/modifica/{id}(id=${r.id})}" 
+                       class="btn-review-edit">
+                        ✏️ Modifica Recensione
+                    </a>
+
+                    <form th:if="${credentials != null and ((credentials.user != null and credentials.user.id == r.utente.id) or credentials.role == 'ADMIN')}" 
+                          th:action="@{/recensione/elimina/{id}(id=${r.id})}" 
+                          method="POST" class="m-0" onsubmit="return confirm('Vuoi davvero eliminare questa recensione?');">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" class="btn-review-delete">
+                            🗑️ Elimina Recensione
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div th:if="${#lists.isEmpty(recensioni)}" class="empty-state-box mt-15">
+                Nessuna recensione ancora presente per questo film. Sii il primo a recensirlo!
+            </div>
+        </div>
+
+        <div class="mt-40">
+            <a th:href="@{/films}" class="btn-outline">← Torna al catalogo film</a>
+        </div>
+    </div>
+
+</body>
+</html>

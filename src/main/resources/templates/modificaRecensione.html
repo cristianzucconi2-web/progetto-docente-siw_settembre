@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifica Recensione - FestivalHUB</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container-sm">
+        <div class="form-card">
+            <h1 class="card-title mt-0">Modifica la tua recensione</h1>
+            <p class="card-desc-text mb-25">Film: <strong th:text="${recensione.film.titolo}"></strong></p>
+
+            <form th:action="@{'/recensione/modifica/' + ${recensione.id}}" method="POST">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                <div class="form-group">
+                    <label>Valutazione (voto da 1 a 5):</label>
+                    <select name="voto" required>
+                        <option value="5" th:selected="${recensione.voto == 5}">⭐⭐⭐⭐⭐ (5/5 - Eccellente)</option>
+                        <option value="4" th:selected="${recensione.voto == 4}">⭐⭐⭐⭐ (4/5 - Molto Buono)</option>
+                        <option value="3" th:selected="${recensione.voto == 3}">⭐⭐⭐ (3/5 - Buono)</option>
+                        <option value="2" th:selected="${recensione.voto == 2}">⭐⭐ (2/5 - Sufficiente)</option>
+                        <option value="1" th:selected="${recensione.voto == 1}">⭐ (1/5 - Scarso)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Testo della recensione:</label>
+                    <textarea name="testo" rows="5" required th:text="${recensione.testo}"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Salva Modifiche</button>
+                    <a th:href="@{'/film/' + ${recensione.film.id}}" class="btn-outline">Annulla</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

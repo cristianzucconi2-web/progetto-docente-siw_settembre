@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Errore - FestivalHUB</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container container-center">
+        <div class="error-icon">⚠️</div>
+        <h1 class="error-code-red" th:text="${errorCode != null ? errorCode : '500'}">500</h1>
+        <h2 class="error-heading-dark" th:text="${errorMessage != null ? errorMessage : 'Si è verificato un errore.'}">Errore</h2>
+        
+        <div th:if="${errorDetail != null}" class="error-detail-box" th:text="${errorDetail}">
+            Dettagli errore...
+        </div>
+
+        <a th:href="@{/}" class="btn-primary">← Torna alla Home</a>
+    </div>
+
+</body>
+</html>

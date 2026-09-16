@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pannello Amministratore - FestivalHUB</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1>Pannello di Controllo Amministratore</h1>
+            <p>
+                Gestisci festival, film, registi, sale, programmazione proiezioni ed esegui i benchmark JPA.
+            </p>
+        </div>
+
+        <!-- Stats Dashboard -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div>
+                    <h4>Festival</h4>
+                    <p th:text="${numFestivals}">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎬</div>
+                <div>
+                    <h4>Film</h4>
+                    <p th:text="${numFilm}">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👤</div>
+                <div>
+                    <h4>Registi</h4>
+                    <p th:text="${numRegisti}">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏛️</div>
+                <div>
+                    <h4>Sale</h4>
+                    <p th:text="${numSale}">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎟️</div>
+                <div>
+                    <h4>Proiezioni</h4>
+                    <p th:text="${numProiezioni}">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div>
+                    <h4>Utenti</h4>
+                    <p th:text="${numUtenti}">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sezioni di Gestione -->
+        <div class="mgmt-grid">
+            <!-- Festival -->
+            <div class="mgmt-card">
+                <div>
+                    <h2>🏆 Gestione Festival</h2>
+                    <p>
+                        Crea nuovi festival, definisci date, città ed edizioni, e associa i film in concorso.
+                    </p>
+                </div>
+                <div class="mgmt-links">
+                    <a th:href="@{/admin/nuovoFestival}" class="mgmt-btn">
+                        <span>Aggiungi Nuovo Festival</span>
+                        <span>+</span>
+                    </a>
+                    <a th:href="@{/festivals}" class="mgmt-btn">
+                        <span>Elenco Festival</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Film -->
+            <div class="mgmt-card">
+                <div>
+                    <h2>🎬 Gestione Film</h2>
+                    <p>
+                        Inserisci e modifica schede film, assegna registi, durate, generi e paesi di produzione.
+                    </p>
+                </div>
+                <div class="mgmt-links">
+                    <a th:href="@{/admin/nuovoFilm}" class="mgmt-btn">
+                        <span>Aggiungi Nuovo Film</span>
+                        <span>+</span>
+                    </a>
+                    <a th:href="@{/admin/films}" class="mgmt-btn">
+                        <span>Elenco Gestionale Film</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Registi -->
+            <div class="mgmt-card">
+                <div>
+                    <h2>👤 Gestione Registi</h2>
+                    <p>
+                        Gestisci l'anagrafica dei registi, le loro biografie e le relative nazionalità.
+                    </p>
+                </div>
+                <div class="mgmt-links">
+                    <a th:href="@{/admin/nuovoRegista}" class="mgmt-btn">
+                        <span>Aggiungi Nuovo Regista</span>
+                        <span>+</span>
+                    </a>
+                    <a th:href="@{/registi}" class="mgmt-btn">
+                        <span>Elenco Registi</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sale -->
+            <div class="mgmt-card">
+                <div>
+                    <h2>🏛️ Gestione Sale</h2>
+                    <p>
+                        Registra sale cinematografiche, indirizzi e capienze massime di posti a sedere.
+                    </p>
+                </div>
+                <div class="mgmt-links">
+                    <a th:href="@{/admin/nuovaSala}" class="mgmt-btn">
+                        <span>Aggiungi Nuova Sala</span>
+                        <span>+</span>
+                    </a>
+                    <a th:href="@{/sale}" class="mgmt-btn">
+                        <span>Elenco Sale</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Proiezioni -->
+            <div class="mgmt-card">
+                <div>
+                    <h2>🎟️ Gestione Proiezioni</h2>
+                    <p>
+                        Programma proiezioni con verifica automatica transazionale anti-sovrapposizione oraria in sala.
+                    </p>
+                </div>
+                <div class="mgmt-links">
+                    <a th:href="@{/admin/nuovaProiezione}" class="mgmt-btn">
+                        <span>Programma Nuova Proiezione</span>
+                        <span>+</span>
+                    </a>
+                    <a th:href="@{/proiezioni}" class="mgmt-btn">
+                        <span>Visualizza Programma</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Performance Analisi JPA -->
+            <div class="mgmt-card mgmt-card-perf">
+                <div>
+                    <h2 class="mgmt-title-perf">⚡ Analisi Sperimentale delle Prestazioni JPA</h2>
+                    <p class="mgmt-desc-perf">
+                        Esegui il benchmark in tempo reale sul caricamento dei film di un festival per confrontare le strategie <strong>LAZY</strong> vs <strong>EAGER</strong> vs <strong>JOIN FETCH</strong> vs <strong>@EntityGraph</strong> e dimostrare la risoluzione del problema N+1.
+                    </p>
+                </div>
+                <div class="mgmt-links">
+                    <a th:href="@{/admin/performance}" class="mgmt-btn mgmt-btn-perf">
+                        <span>Avvia Analisi Sperimentale delle Query</span>
+                        <span>⚡ Avvia benchmark</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

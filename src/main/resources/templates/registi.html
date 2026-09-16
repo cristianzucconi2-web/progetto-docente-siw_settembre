@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registi - FestivalHUB</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">I Nostri Registi</h1>
+                <p class="page-subtitle">Scopri i profili e le biografie dei registi presenti nei festival.</p>
+            </div>
+            <div sec:authorize="hasAuthority('ADMIN')">
+                <a th:href="@{/admin/nuovoRegista}" class="btn-primary">+ Nuovo Regista</a>
+            </div>
+        </div>
+
+        <div class="grid-cards">
+            <div th:each="regista : ${registi}" class="card text-center">
+                <div class="card-icon-lg">🎥</div>
+                <h3 th:text="${regista.nome + ' ' + regista.cognome}" class="card-title mb-8">Nome Cognome</h3>
+                
+                <p class="card-accent-text-sm">
+                    🌍 <span th:text="${regista.nazionalita != null ? regista.nazionalita : 'Nazionalità non specificata'}"></span>
+                </p>
+
+                <p class="card-meta-text-sm" th:if="${regista.dataNascita != null}">
+                    Nato il: <span th:text="${regista.dataNascita}"></span>
+                </p>
+
+                <div class="card-footer-center">
+                    <a th:href="@{/regista/{id}(id=${regista.id})}" class="btn-outline btn-action-outline-sm">Filmografia →</a>
+                    
+                    <span sec:authorize="hasAuthority('ADMIN')" class="flex-gap-8 align-center">
+                        <a th:href="@{/admin/modificaRegista/{id}(id=${regista.id})}" class="link-edit-action">Modifica</a>
+                        <form th:action="@{/admin/eliminaRegista/{id}(id=${regista.id})}" method="POST" class="form-inline" onsubmit="return confirm('Vuoi davvero eliminare questo regista?');">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <button type="submit" class="btn-delete-plain">Elimina</button>
+                        </form>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accesso Negato - FestivalHUB</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{fragments/navbar :: nav}"></div>
+
+    <div class="container container-center">
+        <div class="error-icon">🚫</div>
+        <h1 class="error-code-red">403</h1>
+        <h2 class="error-heading-dark">Accesso Negato</h2>
+        <p class="error-msg-box">
+            Non disponi delle autorizzazioni necessarie per visualizzare questa pagina o eseguire questa operazione.
+        </p>
+        <a th:href="@{/}" class="btn-primary">← Torna alla Home</a>
+    </div>
+
+</body>
+</html>
